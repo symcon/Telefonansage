@@ -16,7 +16,7 @@
             $this->EnableAction('PhoneNumber');
             $this->EnableAction('Text');
 
-            $this->RegisterScript('CallScript', $this->Translate('Start Call'), 'TA_StartCall(IPS_GetParent($_IPS["SELF"]));');
+            $this->RegisterScript('CallScript', $this->Translate('Start Call'), '<?php TA_StartCall(IPS_GetParent($_IPS["SELF"]));');
 
             $this->RegisterTimer('CheckConnectionTimer', 0, 'TA_CheckConnection(IPS_GetParent($_IPS["SELF"]));');
 		}
@@ -55,7 +55,7 @@
                 $this->SetTimerInterval('CheckConnectionTimer', 0);
             };
 
-            $c = VoIP_GetConnection($this->ReadPropertyInteger('VoIPInstance'), $id);
+            $c = VoIP_GetConnection($this->ReadPropertyInteger('VoIPInstanceID'), $id);
             if($c['Connected']) {
                 // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
                 VoIP_PlayWave($this->ReadPropertyInteger('TTSInstanceID'), $id, TTSAWSPOLLY_GenerateFile(50845, GetValue(39787)));
