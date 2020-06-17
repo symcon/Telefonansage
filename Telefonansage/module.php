@@ -50,7 +50,7 @@
 
             $this->SetBuffer('CallStart', json_encode(time()));
             $this->SetBuffer('CallID', json_encode($id));
-            $this->SetBuffer('Text', $text)
+            $this->SetBuffer('Text', $text);
             $this->SetTimerInterval('CheckConnectionTimer', 200);
         }
 
