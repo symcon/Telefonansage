@@ -62,7 +62,7 @@
                 VoIP_PlayWave($this->ReadPropertyInteger('VoIPInstanceID'), $id, TTSAWSPOLLY_GenerateFile($this->ReadPropertyInteger('TTSInstanceID'), $this->GetValue('Text')));
                 $endCall();
             }
-            else if ($this->GetBuffer('CallStart') < time() - $this->ReadPropertyInteger('WaitForConnection')) {
+            else if (json_decode($this->GetBuffer('CallStart')) < (time() - $this->ReadPropertyInteger('WaitForConnection'))) {
                 $endCall();
             }
         }
