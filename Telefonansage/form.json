@@ -9,6 +9,12 @@
             "type": "SelectInstance",
             "name": "TTSInstanceID",
             "label": "Text-to-Speech Instance (Polly)"
+        },
+        {
+            "type": "NumberSpinner",
+            "name": "WaitForConnection",
+            "label": "Wait Duration before disconnect",
+            "suffix": "seconds"
         }
     ],
     "actions": [
