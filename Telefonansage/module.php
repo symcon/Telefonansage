@@ -41,7 +41,7 @@
             $this->StartCallEx($this->GetValue('PhoneNumber'), $this->GetValue('Text'));
         }
         
-        public function StartCallEx($phoneNumber, $text) {
+        public function StartCallEx(string $phoneNumber, string $text) {
             if (json_decode($this->GetBuffer('CallActive'))) {
                 echo $this->Translate('The instance is already calling');
                 return;
