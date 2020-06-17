@@ -42,7 +42,7 @@
                 echo $this->Translate('The instance is already calling');
                 return;
             }
-            $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), GetValue(47051));
+            $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), $this->ReadPropertyString('PhoneNumber'));
 
             $this->SetBuffer('CallStart', json_encode(time()));
             $this->SetBuffer('CallID', json_encode($id));
@@ -59,7 +59,7 @@
             $c = VoIP_GetConnection($this->ReadPropertyInteger('VoIPInstanceID'), $id);
             if($c['Connected']) {
                 // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
-                VoIP_PlayWave($this->ReadPropertyInteger('TTSInstanceID'), $id, TTSAWSPOLLY_GenerateFile(50845, GetValue(39787)));
+                VoIP_PlayWave($this->ReadPropertyInteger('VoIPInstanceID'), $id, TTSAWSPOLLY_GenerateFile($this->ReadPropertyInteger('TTSInstanceID'), $this->ReadPropertyString('Text')));
                 $endCall();
             }
             else if ($this->GetBuffer('CallStart') < time() - $this->ReadPropertyInteger('WaitForConnection')) {
