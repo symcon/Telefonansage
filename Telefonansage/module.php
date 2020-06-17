@@ -63,6 +63,7 @@
                 $endCall();
             }
             else if (json_decode($this->GetBuffer('CallStart')) < (time() - $this->ReadPropertyInteger('WaitForConnection'))) {
+                VOIP_Disconnect($this->ReadPropertyInteger('VoIPInstanceID'));
                 $endCall();
             }
         }
