@@ -18,7 +18,7 @@
 
             $this->RegisterScript('CallScript', $this->Translate('Start Call'), '<?php TA_StartCall(IPS_GetParent($_IPS["SELF"]));');
 
-            $this->RegisterTimer('CheckConnectionTimer', 0, 'TA_CheckConnection(IPS_GetParent($_IPS["SELF"]));');
+            $this->RegisterTimer('CheckConnectionTimer', 0, 'TA_CheckConnection($_IPS["TARGET"]);');
 		}
 
 		public function Destroy()
