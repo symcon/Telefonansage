@@ -55,6 +55,7 @@
                 $this->SetTimerInterval('CheckConnectionTimer', 0);
             };
 
+            $id = json_decode($this->GetBuffer('CallID'));
             $c = VoIP_GetConnection($this->ReadPropertyInteger('VoIPInstanceID'), $id);
             if($c['Connected']) {
                 // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
