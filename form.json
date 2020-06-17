@@ -1,0 +1,19 @@
+{
+    "elements": [
+        {
+            "type": "SelectInstance",
+            "name": "VoIPInstanceID",
+            "label": "VoIP Instance"
+        },
+        {
+            "type": "SelectInstance",
+            "name": "TTSInstanceID",
+            "label": "Text-to-Speech Instance (Polly)"
+        }
+    ],
+    "actions": [
+        {
+            "type": "TestCenter"
+        }
+    ]
+}

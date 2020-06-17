@@ -1,0 +1,12 @@
+{
+    "id": "{C44E335C-DB75-B927-A3F2-3FFD024A5053}",
+    "name": "Telefonansage",
+    "type": 3,
+    "vendor": "",
+    "aliases": [],
+    "parentRequirements": [],
+    "childRequirements": [],
+    "implemented": [],
+    "prefix": "TA",
+    "url": ""
+}
