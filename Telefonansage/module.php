@@ -48,10 +48,17 @@
             }
             $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), $phoneNumber);
 
+            // if starting the call failed, do not start the timer
+            if ($id === false) {
+                return false;
+            }
+            
             $this->SetBuffer('CallStart', json_encode(time()));
             $this->SetBuffer('CallID', json_encode($id));
             $this->SetBuffer('Text', $text);
             $this->SetTimerInterval('CheckConnectionTimer', 200);
+
+            return true;
         }
 
         public function CheckConnection() {
