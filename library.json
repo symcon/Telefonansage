@@ -1,8 +1,8 @@
 {
     "id": "{EC529B8B-67DF-B940-A1C0-08A97C2053D9}",
     "name": "Telefonansage",
-    "author": "Dr. Niels",
-    "url": "",
+    "author": "Symcon GmbH",
+    "url": "https://symcon.de",
     "compatibility": {
         "version": "5.3"
     },
