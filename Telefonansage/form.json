@@ -3,17 +3,17 @@
         {
             "type": "SelectInstance",
             "name": "VoIPInstanceID",
-            "label": "VoIP Instance"
+            "caption": "VoIP Instance"
         },
         {
             "type": "SelectInstance",
             "name": "TTSInstanceID",
-            "label": "Text-to-Speech Instance (Polly)"
+            "caption": "Text-to-Speech Instance (Polly)"
         },
         {
             "type": "NumberSpinner",
             "name": "WaitForConnection",
-            "label": "Wait Duration before disconnect",
+            "caption": "Wait Duration before disconnect",
             "suffix": "seconds"
         }
     ],
