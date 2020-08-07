@@ -4,7 +4,8 @@
     "author": "Symcon GmbH",
     "url": "https://symcon.de",
     "compatibility": {
-        "version": "5.3"
+        "version": "5.5",
+        "date": 1596805191
     },
     "version": "1.0",
     "build": 0,
