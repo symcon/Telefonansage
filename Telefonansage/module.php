@@ -3,6 +3,7 @@
 declare(strict_types=1);
 class Telefonansage extends IPSModule
 {
+
     public function Create()
     {
         //Never delete this line!
@@ -14,13 +15,14 @@ class Telefonansage extends IPSModule
 
         $this->RegisterVariableString('PhoneNumber', $this->Translate('Phone Number'));
         $this->RegisterVariableString('Text', $this->Translate('Text'));
+        $this->RegisterVariableString('DTMF', $this->Translate('DTMF Sound'));
 
         $this->EnableAction('PhoneNumber');
         $this->EnableAction('Text');
 
         $this->RegisterScript('CallScript', $this->Translate('Start Call'), '<?php TA_StartCall(IPS_GetParent($_IPS["SELF"]));');
 
-        $this->RegisterTimer('CheckConnectionTimer', 0, 'TA_CheckConnection($_IPS["TARGET"]);');
+        $this->RegisterTimer('CloseConnectionTimer', 0, 'TA_CloseConnection($_IPS["TARGET"]);');
     }
 
     public function Destroy()
@@ -33,11 +35,57 @@ class Telefonansage extends IPSModule
     {
         //Never delete this line!
         parent::ApplyChanges();
+
+        foreach ($this->GetMessageList() as $senderID => $messages) {
+            foreach ($messages as $message) {
+                $this->UnregisterMessage($senderID, $message);
+            }
+        }
+
+        $this->RegisterMessage($this->ReadPropertyInteger('VoIPInstanceID'), 21000); /* VOIP_EVENT */
     }
 
     public function RequestAction($ident, $value)
     {
         $this->SetValue($ident, $value);
+
+        switch ($ident) {
+            case 'Text':
+                $id = json_decode($this->GetBuffer('CallID'));
+                if ($id === null) {
+                    break;
+                }
+                $c = VoIP_GetConnection($this->ReadPropertyInteger('VoIPInstanceID'), $id);
+                if ($c['Connected']) {
+                    // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
+                    VoIP_PlayWave($this->ReadPropertyInteger('VoIPInstanceID'), $id, TTSAWSPOLLY_GenerateFile($this->ReadPropertyInteger('TTSInstanceID'), $value));
+                }
+                break;
+        }
+    }
+
+    public function MessageSink($timestamp, $senderID, $messageID, $data) {
+        $this->SendDebug('Message Received', json_encode([$senderID, $messageID, $data]), 0);
+        // We are only registered to VOIP_EVENT of the defined VoIP instance, so no need to validate $senderID and $messageID
+        // $data = [ connectionID, event, data ]
+        if ($data[0] === json_decode($this->GetBuffer('CallID'))) {
+            switch ($data[1]) {
+                case 'Connect':
+                    // Disable close timer and play text
+                    $this->SetTimerInterval('CloseConnectionTimer', 0);
+                    // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
+                    VoIP_PlayWave($this->ReadPropertyInteger('VoIPInstanceID'), $data[0], TTSAWSPOLLY_GenerateFile($this->ReadPropertyInteger('TTSInstanceID'), $this->GetBuffer('Text')));
+                    break;
+
+                case 'Disconnect':
+                    $this->SetBuffer('CallID', '');
+                    break;
+
+                case 'DTMF':
+                    $this->SetValue('DTMF', $data[2]);
+                    break;
+            }
+        }
     }
 
     public function StartCall()
@@ -47,35 +95,21 @@ class Telefonansage extends IPSModule
 
     public function StartCallEx(string $PhoneNumber, string $Text)
     {
-        if (json_decode($this->GetBuffer('CallActive'))) {
+        if (json_decode($this->GetBuffer('ConnectionID')) != '') {
             echo $this->Translate('The instance is already calling');
             return;
         }
         $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), $PhoneNumber);
 
-        $this->SetBuffer('CallStart', json_encode(time()));
         $this->SetBuffer('CallID', json_encode($id));
         $this->SetBuffer('Text', $Text);
-        $this->SetTimerInterval('CheckConnectionTimer', 200);
+        $this->SetTimerInterval('CloseConnectionTimer', 1000 * $this->ReadPropertyInteger('WaitForConnection'));
     }
 
-    public function CheckConnection()
-    {
-        $endCall = function ()
-        {
-            $this->SetBuffer('CallActive', json_encode(false));
-            $this->SetTimerInterval('CheckConnectionTimer', 0);
-        };
-
+    public function CloseConnection() {
         $id = json_decode($this->GetBuffer('CallID'));
-        $c = VoIP_GetConnection($this->ReadPropertyInteger('VoIPInstanceID'), $id);
-        if ($c['Connected']) {
-            // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
-            VoIP_PlayWave($this->ReadPropertyInteger('VoIPInstanceID'), $id, TTSAWSPOLLY_GenerateFile($this->ReadPropertyInteger('TTSInstanceID'), $this->GetBuffer('Text')));
-            $endCall();
-        } elseif (json_decode($this->GetBuffer('CallStart')) < (time() - $this->ReadPropertyInteger('WaitForConnection'))) {
+        if ($id !== null) {
             VOIP_Disconnect($this->ReadPropertyInteger('VoIPInstanceID'), $id);
-            $endCall();
         }
     }
 }
