@@ -20,6 +20,11 @@
     "actions": [
         {
             "type": "TestCenter"
+        },
+        {
+            "type": "Button",
+            "caption": "Start Call",
+            "onClick": "TA_StartCall($id);"
         }
     ]
 }
