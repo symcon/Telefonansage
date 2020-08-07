@@ -1,5 +1,6 @@
 # Telefonansage
-Beschreibung des Moduls.
+	
+Das Telefonansage-Modul ermöglicht die komfortable Verknüpfung einer VoIP-Instanz und einer Text-to-Speech-Instanz (Polly) um eine Telefonnummer anzurufen und bei Annahme des Anrufs einen Text auszugeben. Darüber hinaus, kann das Modul auf DTMF-Töne reagieren und weitere Texte ausgeben.
 
 ### Inhaltsverzeichnis
 
@@ -13,16 +14,20 @@ Beschreibung des Moduls.
 
 ### 1. Funktionsumfang
 
-*
+* Anrufen einer Telefonnummer und Ausgabe eines Textes
+* Auswerten von DTMF-Tönen
+* Ausgabe von weiteren Texten auf einer bestehenden Verbindung
 
 ### 2. Vorraussetzungen
 
-- IP-Symcon ab Version 5.3
+- IP-Symcon ab Version 5.5
+- Eingerichtete VoIP-Instanz
+- [Eingerichtete Text-to-Speech-Instanz (AWS Polly)](https://github.com/symcon/TTSAWSPolly/tree/master/TTSAWSPolly)
 
 ### 3. Software-Installation
 
 * Über den Module Store das 'Telefonansage'-Modul installieren.
-* Alternativ über das Module Control folgende URL hinzufügen
+* Alternativ über das Module Control folgende URL hinzufügen: https://github.com/symcon/Telefonansage
 
 ### 4. Einrichten der Instanzen in IP-Symcon
 
@@ -31,10 +36,11 @@ Beschreibung des Moduls.
 
 __Konfigurationsseite__:
 
-Name     | Beschreibung
--------- | ------------------
-         |
-         |
+Name                                   | Beschreibung
+-------------------------------------- | ------------------
+VoIP-Instanz                           | Die VoIP-Instanz, welche die Anrufe verwaltet
+Text-to-Speech-Instanz (Polly)         | Die Text-to-Speech-Instanz, welche die Texte in Tondaten umwandelt
+Dauer bis die Verbindung getrennt wird | Die maximale Zeit, die gewartet wird, dass ein Anruf angenommen wird
 
 ### 5. Statusvariablen und Profile
 
@@ -42,26 +48,31 @@ Die Statusvariablen/Kategorien werden automatisch angelegt. Das Löschen einzeln
 
 #### Statusvariablen
 
-Name   | Typ     | Beschreibung
------- | ------- | ------------
-       |         |
-       |         |
+Name          | Typ     | Beschreibung
+------------- | ------- | ------------
+Telefonnummer | String  | Die Telefonnummer, welche bei der Betätigung von "Anruf starten" angerufen wird
+Text          | String  | Der Text, welcher bei der Betätigung von "Anruf starten" initial ausgegeben wird. Wird diese Variable geschaltet während eine Verbindung besteht, wird der neue Text direkt ausgegeben
+DTMF-Ton      | String  | Wird während des Anrufs ein DTMF-Ton verwendet, wird er in dieser Variable gespeichert
+Anruf starten | Skript  | Startet einen Anruf mit der aktuell eingestellten Telefonnummer und dem aktuellen Text
 
 #### Profile
 
-Name   | Typ
------- | -------
-       |
-       |
+Es werden keine Profile angelegt.
 
 ### 6. WebFront
 
-Die Funktionalität, die das Modul im WebFront bietet.
+Über das WebFront werden keine zusätzlichen Informationen angezeigt.
 
 ### 7. PHP-Befehlsreferenz
 
-`boolean TA_BeispielFunktion(integer $InstanzID);`
-Erklärung der Funktion.
+`void TA_StartCall(integer $InstanzID);`
+Startet einen Anruf auf Basis der aktuellen Einstellung.
 
 Beispiel:
-`TA_BeispielFunktion(12345);`
+`TA_StartCall(12345);`
+
+`void TA_StartCallEx(integer $InstanzID, string $Telefonnummer, string $Text);`
+Startet einen Anruf an die Telefonnummer $Telefonnummer und gibt den Text $Text aus.
+
+Beispiel:
+`TA_StartCallEx(12345, "+4945130500511", "Ich liebe IP-Symcon!");`

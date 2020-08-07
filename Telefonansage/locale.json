@@ -1,13 +1,13 @@
 {
     "translations": {
         "de": {
-            "VoIP Instance": "VoIP Instanz",
-            "Text-to-Speech Instance (Polly)": "Text-to-Speech Instanz (Polly)",
+            "VoIP Instance": "VoIP-Instanz",
+            "Text-to-Speech Instance (Polly)": "Text-to-Speech-Instanz (Polly)",
             "Wait Duration before disconnect": "Dauer bis die Verbindung getrennt wird",
             "seconds": "Sekunden",
             "Phone Number": "Telefonnummer",
             "Text": "Text",
-            "Start Call": "Anruf Starten",
+            "Start Call": "Anruf starten",
             "The instance is already calling": "Die Instanz ruft bereits an"
         }
     }

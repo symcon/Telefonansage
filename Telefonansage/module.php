@@ -45,17 +45,17 @@ class Telefonansage extends IPSModule
         $this->StartCallEx($this->GetValue('PhoneNumber'), $this->GetValue('Text'));
     }
 
-    public function StartCallEx(string $phoneNumber, string $text)
+    public function StartCallEx(string $PhoneNumber, string $Text)
     {
         if (json_decode($this->GetBuffer('CallActive'))) {
             echo $this->Translate('The instance is already calling');
             return;
         }
-        $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), $phoneNumber);
+        $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), $PhoneNumber);
 
         $this->SetBuffer('CallStart', json_encode(time()));
         $this->SetBuffer('CallID', json_encode($id));
-        $this->SetBuffer('Text', $text);
+        $this->SetBuffer('Text', $Text);
         $this->SetTimerInterval('CheckConnectionTimer', 200);
     }
 
