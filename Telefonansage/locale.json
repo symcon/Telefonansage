@@ -9,7 +9,9 @@
             "Text": "Text",
             "DTMF Sound": "DTMF-Ton",
             "Start Call": "Anruf starten",
-            "The instance is already calling": "Die Instanz ruft bereits an"
+            "The instance is already calling": "Die Instanz ruft bereits an",
+            "Not all instances are set": "Es sind nicht alle Instanzen gesetzt",
+            "Only the format WAV with a sampling rate of 8000 Hz is supported": "Es wird nur das Format WAV mit der Abtastrate 8000 Hz unterstützt"
         }
     }
 }

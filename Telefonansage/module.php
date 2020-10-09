@@ -3,7 +3,6 @@
 declare(strict_types=1);
 class Telefonansage extends IPSModule
 {
-
     public function Create()
     {
         //Never delete this line!
@@ -42,6 +41,14 @@ class Telefonansage extends IPSModule
             }
         }
 
+        $newStatus = $this->calculateInstanceStatus();
+        if ($this->GetStatus() !== $newStatus) {
+            $this->SetStatus($newStatus);
+        }
+        if ($newStatus != IS_ACTIVE) {
+            return;
+        }
+
         $this->RegisterMessage($this->ReadPropertyInteger('VoIPInstanceID'), 21000); /* VOIP_EVENT */
     }
 
@@ -49,6 +56,9 @@ class Telefonansage extends IPSModule
     {
         $this->SetValue($ident, $value);
 
+        if (!$this->checkConfiguration()) {
+            return;
+        }
         switch ($ident) {
             case 'Text':
                 $id = json_decode($this->GetBuffer('CallID'));
@@ -64,13 +74,17 @@ class Telefonansage extends IPSModule
         }
     }
 
-    public function MessageSink($timestamp, $senderID, $messageID, $data) {
+    public function MessageSink($timestamp, $senderID, $messageID, $data)
+    {
         $this->SendDebug('Message Received', json_encode([$senderID, $messageID, $data]), 0);
         // We are only registered to VOIP_EVENT of the defined VoIP instance, so no need to validate $senderID and $messageID
         // $data = [ connectionID, event, data ]
         if ($data[0] === json_decode($this->GetBuffer('CallID'))) {
             switch ($data[1]) {
                 case 'Connect':
+                    if (!$this->checkConfiguration()) {
+                        return;
+                    }
                     // Disable close timer and play text
                     $this->SetTimerInterval('CloseConnectionTimer', 0);
                     // VoIP_Playwave() unterstützt ausschließlich WAV im Format: 16 Bit, 8000 Hz, Mono.
@@ -99,6 +113,10 @@ class Telefonansage extends IPSModule
             echo $this->Translate('The instance is already calling');
             return;
         }
+
+        if (!$this->checkConfiguration()) {
+            return;
+        }
         $id = VoIP_Connect($this->ReadPropertyInteger('VoIPInstanceID'), $PhoneNumber);
 
         $this->SetBuffer('CallID', json_encode($id));
@@ -106,10 +124,46 @@ class Telefonansage extends IPSModule
         $this->SetTimerInterval('CloseConnectionTimer', 1000 * $this->ReadPropertyInteger('WaitForConnection'));
     }
 
-    public function CloseConnection() {
+    public function CloseConnection()
+    {
+        if (!$this->checkConfiguration()) {
+            return;
+        }
         $id = json_decode($this->GetBuffer('CallID'));
         if ($id !== null) {
             VOIP_Disconnect($this->ReadPropertyInteger('VoIPInstanceID'), $id);
         }
+    }
+
+    private function calculateInstanceStatus()
+    {
+        $getCode = function ()
+        {
+            if (($this->ReadPropertyInteger('VoIPInstanceID') === 0) || ($this->ReadPropertyInteger('TTSInstanceID') === 0)) {
+                return IS_INACTIVE;
+            }
+            $pollyConfiguration = json_decode(IPS_GetConfiguration($this->ReadPropertyInteger('TTSInstanceID')), true);
+            if (($pollyConfiguration['SampleRate'] !== '8000') || ($pollyConfiguration['OutputFormat'] !== 'pcm')) {
+                return IS_EBASE;
+            }
+            return IS_ACTIVE;
+        };
+
+        return $getCode();
+    }
+
+    private function checkConfiguration()
+    {
+        $statusCode = $this->calculateInstanceStatus();
+        if ($statusCode != IS_ACTIVE) {
+            foreach (json_decode(IPS_GetConfigurationForm($this->InstanceID), true)['status'] as $status) {
+                if ($status['code'] == $statusCode) {
+                    echo $this->Translate($status['caption']);
+                    return;
+                }
+            }
+            return false;
+        }
+        return true;
     }
 }

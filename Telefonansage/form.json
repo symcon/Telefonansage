@@ -28,5 +28,18 @@
             "caption": "Start Call",
             "onClick": "TA_StartCall($id);"
         }
+    ],
+    "status": [
+        {
+            "code" : 104,
+            "caption": "Not all instances are set",
+            "icon": "inactive"
+        },
+        {
+            "code": 200,
+            "caption": "Only the format WAV with a sampling rate of 8000 Hz is supported",
+            "icon": "error"
+        }
+
     ]
 }
