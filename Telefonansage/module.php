@@ -137,19 +137,14 @@ class Telefonansage extends IPSModule
 
     private function calculateInstanceStatus()
     {
-        $getCode = function ()
-        {
-            if (($this->ReadPropertyInteger('VoIPInstanceID') === 0) || ($this->ReadPropertyInteger('TTSInstanceID') === 0)) {
-                return IS_INACTIVE;
-            }
-            $pollyConfiguration = json_decode(IPS_GetConfiguration($this->ReadPropertyInteger('TTSInstanceID')), true);
-            if (($pollyConfiguration['SampleRate'] !== '8000') || ($pollyConfiguration['OutputFormat'] !== 'pcm')) {
-                return IS_EBASE;
-            }
-            return IS_ACTIVE;
-        };
-
-        return $getCode();
+        if (($this->ReadPropertyInteger('VoIPInstanceID') === 0) || ($this->ReadPropertyInteger('TTSInstanceID') === 0)) {
+            return IS_INACTIVE;
+        }
+        $pollyConfiguration = json_decode(IPS_GetConfiguration($this->ReadPropertyInteger('TTSInstanceID')), true);
+        if (($pollyConfiguration['SampleRate'] !== '8000') || ($pollyConfiguration['OutputFormat'] !== 'pcm')) {
+            return IS_EBASE;
+        }
+        return IS_ACTIVE;
     }
 
     private function checkConfiguration()
