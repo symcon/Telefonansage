@@ -18,7 +18,7 @@ Das Telefonansage-Modul ermöglicht die komfortable Verknüpfung einer VoIP-Inst
 * Auswerten von DTMF-Tönen
 * Ausgabe von weiteren Texten auf einer bestehenden Verbindung
 
-### 2. Vorraussetzungen
+### 2. Voraussetzungen
 
 - IP-Symcon ab Version 5.5
 - Eingerichtete VoIP-Instanz
