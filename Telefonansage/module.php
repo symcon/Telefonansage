@@ -140,9 +140,13 @@ class Telefonansage extends IPSModule
         if (($this->ReadPropertyInteger('VoIPInstanceID') === 0) || ($this->ReadPropertyInteger('TTSInstanceID') === 0)) {
             return IS_INACTIVE;
         }
-        $pollyConfiguration = json_decode(IPS_GetConfiguration($this->ReadPropertyInteger('TTSInstanceID')), true);
-        if (($pollyConfiguration['SampleRate'] !== '8000') || ($pollyConfiguration['OutputFormat'] !== 'pcm')) {
-            return IS_EBASE;
+        // During startup the instance might not be available yet.
+        // Let's assume this was properly checked during initial configuration
+        if (IPS_GetKernelRunlevel() == KR_READY) {
+            $pollyConfiguration = json_decode(IPS_GetConfiguration($this->ReadPropertyInteger('TTSInstanceID')), true);
+            if (($pollyConfiguration['SampleRate'] !== '8000') || ($pollyConfiguration['OutputFormat'] !== 'pcm')) {
+                return IS_EBASE;
+            }
         }
         return IS_ACTIVE;
     }
