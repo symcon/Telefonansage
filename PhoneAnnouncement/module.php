@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-class Telefonansage extends IPSModule
+class PhoneAnnouncement extends IPSModule
 {
     public function Create()
     {

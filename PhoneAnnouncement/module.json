@@ -1,6 +1,6 @@
 {
     "id": "{C44E335C-DB75-B927-A3F2-3FFD024A5053}",
-    "name": "Telefonansage",
+    "name": "Phone Announcement",
     "type": 3,
     "vendor": "",
     "aliases": [],
@@ -8,5 +8,5 @@
     "childRequirements": [],
     "implemented": [],
     "prefix": "TA",
-    "url": "https://github.com/symcon/Telefonansage/tree/master/Telefonansage"
+    "url": "https://www.symcon.de/en/service/documentation/module-reference/phone-announcement/"
 }

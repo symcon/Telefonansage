@@ -8,8 +8,8 @@ class TelefonansageValidationTest extends TestCaseSymconValidation
     {
         $this->validateLibrary(__DIR__ . '/..');
     }
-    public function testValidateTelefonansageModule(): void
+    public function testValidatePhoneAnnouncementModule(): void
     {
-        $this->validateModule(__DIR__ . '/../Telefonansage');
+        $this->validateModule(__DIR__ . '/../PhoneAnnouncement');
     }
 }
